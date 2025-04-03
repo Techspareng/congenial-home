@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Hotel - LUXE Admin</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #dfa974;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #c69c6d;
+        }
+        
+        /* Admin styles */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar styles */
+        .admin-sidebar {
+            width: 250px;
+            background-color: #222736;
+            color: #fff;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .admin-logo {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #3d4461;
+            margin-bottom: 20px;
+        }
+        
+        .admin-logo a {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .admin-nav ul {
+            list-style: none;
+        }
+        
+        .admin-nav ul li {
+            margin-bottom: 5px;
+        }
+        
+        .admin-nav ul li a {
+            display: block;
+            padding: 10px 20px;
+            color: #aaaab3;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .admin-nav ul li a:hover,
+        .admin-nav ul li a.active {
+            background-color: #2c3143;
+            color: #dfa974;
+        }
+        
+        .admin-nav ul li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main content styles */
+        .admin-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            background-color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-header h1 {
+            font-size: 24px;
+            color: #19191a;
+        }
+        
+        .admin-header .breadcrumb {
+            display: flex;
+            list-style: none;
+        }
+        
+        .admin-header .breadcrumb li {
+            margin-right: 5px;
+        }
+        
+        .admin-header .breadcrumb li:after {
+            content: '/';
+            margin-left: 5px;
+            color: #707079;
+        }
+        
+        .admin-header .breadcrumb li:last-child:after {
+            content: '';
+        }
+        
+        .admin-header .breadcrumb li a {
+            color: #707079;
+        }
+        
+        .admin-header .breadcrumb li.active {
+            color: #dfa974;
+        }
+        
+        /* Card styles */
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        .card-header h2 {
+            font-size: 18px;
+            color: #19191a;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Form styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-hint {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #707079;
+        }
+        
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            background-color: #dfa974;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c69c6d;
+        }
+        
+        .btn-lg {
+            padding: 12px 24px;
+            font-size: 18px;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #dfa974;
+            color: #dfa974;
+        }
+        
+        .btn-outline:hover {
+            background-color: #dfa974;
+            color: #fff;
+        }
+        
+        /* Alert messages */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 3px;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .admin-sidebar {
+                width: 200px;
+            }
+            
+            .admin-content {
+                margin-left: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            
+            .admin-sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+            
+            .admin-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Admin Sidebar -->
+        <div class="admin-sidebar">
+            <div class="admin-logo">
+                <a href="/admin">LUXE Admin</a>
+            </div>
+            <nav class="admin-nav">
+                <ul>
+                    <li><a href="/admin">Dashboard</a></li>
+                    <li><a href="/admin/hotel/add" class="active">Add Hotel</a></li>
+                    <li><a href="/admin/bookings">Manage Bookings</a></li>
+                    <li><a href="/admin/rooms">Manage Rooms</a></li>
+                    <li><a href="/admin/users">Manage Users</a></li>
+                    <li><a href="/admin/reviews">Manage Reviews</a></li>
+                    <li><a href="/admin/settings">Settings</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Admin Content -->
+        <div class="admin-content">
+            <!-- Header -->
+            <div class="admin-header">
+                <div>
+                    <h1>Add New Hotel</h1>
+                    <ul class="breadcrumb">
+                        <li><a href="/admin">Dashboard</a></li>
+                        <li class="active">Add Hotel</li>
+                    </ul>
+                </div>
+                <a href="/admin" class="btn btn-outline">Back to Dashboard</a>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Add Hotel Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Hotel Details</h2>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_hotel') }}" method="POST">
+                        <div class="form-group">
+                            <label for="name">Hotel Name</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" id="address" name="address" class="form-control" required>
+                            <span class="form-hint">Full address including city, state and zip code</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact">Contact Information</label>
+                            <input type="text" id="contact" name="contact" class="form-control" required>
+                            <span class="form-hint">Phone number, email, etc.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" class="form-control" required></textarea>
+                            <span class="form-hint">Detailed description of the hotel, amenities, and surroundings</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amenities">Amenities</label>
+                            <input type="text" id="amenities" name="amenities" class="form-control" required>
+                            <span class="form-hint">Comma-separated list of amenities (e.g., Free WiFi, Swimming Pool, Spa, Restaurant)</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image_url">Image URL</label>
+                            <input type="text" id="image_url" name="image_url" class="form-control">
+                            <span class="form-hint">URL of the main hotel image. Leave blank to use default image.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-lg">Add Hotel</button>
+                            <a href="/admin" class="btn btn-outline">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

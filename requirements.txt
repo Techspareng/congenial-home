@@ -1,0 +1,17 @@
+Flask
+Flask-WTF
+Flask-Session
+Flask-SQLAlchemy
+Flask-Login
+Flask-Migrate
+Flask-RESTful
+stripe
+Flask-Mail
+Flask-Cors
+Flask-Admin
+Flask-Bcrypt
+Flask-Uploads
+Flask-Cache
+Flask-Assets
+Flask-SocketIO
+Flask-Testing

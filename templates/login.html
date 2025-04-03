@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Luxury Hotel & Resort</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #dfa974;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #c69c6d;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #222736;
+            padding: 20px 0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        /* Login form */
+        .login-section {
+            padding: 80px 0;
+        }
+        
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-title h2 {
+            font-size: 32px;
+            color: #19191a;
+            margin-bottom: 10px;
+        }
+        
+        .form-title p {
+            color: #707079;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #dfa974;
+            outline: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #dfa974;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c69c6d;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-message {
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 20px;
+            background-color: #222736;
+            color: #aaaab3;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-widget {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-widget h3 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .footer-contact li {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+        
+        .footer-social a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #33384d;
+            text-align: center;
+            line-height: 40px;
+            color: #fff;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .footer-social a:hover {
+            background-color: #dfa974;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #3d4461;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .form-container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/">LUXE</a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/rooms">Rooms</a></li>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/services">Services</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/login">Login</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="form-container">
+                <div class="form-title">
+                    <h2>Login</h2>
+                    <p>Please enter your credentials to login</p>
+                </div>
+                
+                <!-- Flash Messages Display -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+                
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn">LOGIN</button>
+                    </div>
+                </form>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="/register">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-widget">
+                    <h3>About Us</h3>
+                    <p>LUXE Hotel is a premier luxury destination offering exceptional service, elegant accommodations, and world-class amenities for discerning travelers.</p>
+                </div>
+                <div class="footer-widget">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-contact">
+                        <li>123 Luxury Avenue, City Center</li>
+                        <li>Phone: +1 234 567 8900</li>
+                        <li>Email: info@luxehotel.com</li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <h3>Follow Us</h3>
+                    <div class="footer-social">
+                        <a href="#"><span>f</span></a>
+                        <a href="#"><span>t</span></a>
+                        <a href="#"><span>in</span></a>
+                        <a href="#"><span>ig</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 LUXE Hotel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

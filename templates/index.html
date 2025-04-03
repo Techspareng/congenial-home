@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Hotel & Resort</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Header styles */
+        header {
+            position: absolute;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #dfa974;
+        }
+        
+        /* Hero section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1920/1080') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .hero-content {
+            color: #fff;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-content h1 {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #dfa974;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c69c6d;
+        }
+        
+        /* Booking form */
+        .booking-form {
+            background-color: #fff;
+            padding: 40px;
+            margin-top: -80px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* About section */
+        .about {
+            padding: 100px 0;
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .about-img {
+            flex: 1;
+        }
+        
+        .about-img img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #19191a;
+        }
+        
+        .section-subtitle {
+            font-size: 18px;
+            color: #dfa974;
+            margin-bottom: 10px;
+        }
+        
+        /* Services section */
+        .services {
+            padding: 100px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .services-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .services-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .service-item {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .service-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .service-icon {
+            font-size: 50px;
+            color: #dfa974;
+            margin-bottom: 20px;
+        }
+        
+        .service-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        /* Room section */
+        .rooms {
+            padding: 100px 0;
+        }
+        
+        .rooms-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .rooms-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .room-item {
+            flex: 1;
+            min-width: 300px;
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .room-img img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.5s;
+        }
+        
+        .room-item:hover .room-img img {
+            transform: scale(1.1);
+        }
+        
+        .room-text {
+            padding: 25px;
+        }
+        
+        .room-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .room-price {
+            font-size: 18px;
+            color: #dfa974;
+            margin-bottom: 15px;
+        }
+        
+        /* Testimonial section */
+        .testimonials {
+            padding: 100px 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1920/1080') no-repeat center center/cover;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .testimonial-item {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-author {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .testimonial-position {
+            color: #dfa974;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 20px;
+            background-color: #222736;
+            color: #aaaab3;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-widget {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-widget h3 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .footer-contact li {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+        
+        .footer-social a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #33384d;
+            text-align: center;
+            line-height: 40px;
+            color: #fff;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .footer-social a:hover {
+            background-color: #dfa974;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #3d4461;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 40px;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .service-item, .room-item {
+                min-width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="#">LUXE</a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Rooms</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Experience Luxury & Comfort</h1>
+                <p>Discover the perfect blend of luxury, comfort, and exceptional service for an unforgettable stay.</p>
+                <a href="/login" class="btn">BOOK NOW</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Form -->
+    <section>
+        <div class="container">
+            <div class="booking-form">
+                <form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Check-in Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Check-out Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Adults</label>
+                            <select class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Children</label>
+                            <select class="form-control">
+                                <option>0</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Room Type</label>
+                            <select class="form-control">
+                                <option>Standard</option>
+                                <option>Deluxe</option>
+                                <option>Suite</option>
+                                <option>Executive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn">CHECK AVAILABILITY</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-img">
+                    <img src="/api/placeholder/600/400" alt="Hotel Exterior">
+                </div>
+                <div class="about-text">
+                    <span class="section-subtitle">ABOUT US</span>
+                    <h2 class="section-title">Welcome to LUXE Hotel</h2>
+                    <p>Founded in 1995, our hotel has been providing exceptional service and luxury accommodations for over two decades. We take pride in offering our guests a unique blend of comfort, style, and personalized service.</p>
+                    <p>Our dedicated team of professionals strives to create memorable experiences for every guest who walks through our doors. From our elegantly appointed rooms to our world-class amenities, every detail is designed with your comfort in mind.</p>
+                    <a href="#" class="btn">DISCOVER NOW</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="container">
+            <div class="services-title">
+                <span class="section-subtitle">WHAT WE OFFER</span>
+                <h2 class="section-title">Discover Our Services</h2>
+            </div>
+            <div class="services-container">
+                <div class="service-item">
+                    <div class="service-icon">♨️</div>
+                    <h3 class="service-title">Spa & Wellness</h3>
+                    <p>Indulge in our luxurious spa treatments designed to rejuvenate your body and mind.</p>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon">🍽️</div>
+                    <h3 class="service-title">Restaurant & Bar</h3>
+                    <p>Experience exceptional dining with our world-class chefs and premium selection of beverages.</p>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon">🏊</div>
+                    <h3 class="service-title">Swimming Pool</h3>
+                    <p>Enjoy our stunning infinity pool overlooking breathtaking views of the surrounding landscape.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rooms Section -->
+    <section class="rooms">
+        <div class="container">
+            <div class="rooms-title">
+                <span class="section-subtitle">OUR ROOMS</span>
+                <h2 class="section-title">Explore Our Accommodations</h2>
+            </div>
+            <div class="rooms-container">
+                <div class="room-item">
+                    <div class="room-img">
+                        <img src="/api/placeholder/400/300" alt="Standard Room">
+                    </div>
+                    <div class="room-text">
+                        <h3 class="room-title">Standard Room</h3>
+                        <h4 class="room-price">$99/night</h4>
+                        <p>Our comfortable standard rooms feature all the essential amenities for a pleasant stay.</p>
+                        <a href="#" class="btn">VIEW DETAILS</a>
+                    </div>
+                </div>
+                <div class="room-item">
+                    <div class="room-img">
+                        <img src="/api/placeholder/400/300" alt="Deluxe Room">
+                    </div>
+                    <div class="room-text">
+                        <h3 class="room-title">Deluxe Room</h3>
+                        <h4 class="room-price">$149/night</h4>
+                        <p>Spacious and elegantly furnished, our deluxe rooms offer enhanced comfort and amenities.</p>
+                        <a href="#" class="btn">VIEW DETAILS</a>
+                    </div>
+                </div>
+                <div class="room-item">
+                    <div class="room-img">
+                        <img src="/api/placeholder/400/300" alt="Suite">
+                    </div>
+                    <div class="room-text">
+                        <h3 class="room-title">Executive Suite</h3>
+                        <h4 class="room-price">$229/night</h4>
+                        <p>Experience the ultimate in luxury with our spacious suites featuring separate living areas.</p>
+                        <a href="#" class="btn">VIEW DETAILS</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="testimonial-item">
+                <p class="testimonial-text">"Our stay at LUXE Hotel exceeded all expectations. The staff was incredibly attentive, the rooms were immaculate, and the amenities were top-notch. We will definitely be returning for our next vacation."</p>
+                <h4 class="testimonial-author">Sarah Johnson</h4>
+                <span class="testimonial-position">New York, USA</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-widget">
+                    <h3>About Us</h3>
+                    <p>LUXE Hotel is a premier luxury destination offering exceptional service, elegant accommodations, and world-class amenities for discerning travelers.</p>
+                </div>
+                <div class="footer-widget">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-contact">
+                        <li>123 Luxury Avenue, City Center</li>
+                        <li>Phone: +1 234 567 8900</li>
+                        <li>Email: info@luxehotel.com</li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <h3>Follow Us</h3>
+                    <div class="footer-social">
+                        <a href="#"><span>f</span></a>
+                        <a href="#"><span>t</span></a>
+                        <a href="#"><span>in</span></a>
+                        <a href="#"><span>ig</span></a>
+                    </div>
+                </div>
+                <div class="footer-widget">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to our newsletter for special offers and updates.</p>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Your Email">
+                        </div>
+                        <button type="submit" class="btn">SUBSCRIBE</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 LUXE Hotel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
