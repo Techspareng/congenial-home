@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Booking Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6366f1',
+            secondary: '#8b5cf6',
+            accent: '#ec4899',
+            success: '#22c55e',
+            warning: '#eab308',
+            danger: '#ef4444',
+            background: '#f8fafc'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="bg-blue-900 text-white w-64 flex flex-col">
+      <div class="p-6 border-b border-blue-800">
+        <h1 class="text-2xl font-bold">LuxStay Hotels</h1>
+      </div>
+      
+      <nav class="flex-1 pt-6">
+        <ul>
+          <li class="mb-2">
+            <a href="/dashboard" class="flex items-center py-3 px-6 bg-blue-800 text-white">
+              <i class="fas fa-chart-line mr-3 w-5"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="/rooms" class="flex items-center py-3 px-6 hover:bg-blue-800 transition-colors duration-200">
+              <i class="fas fa-hotel mr-3 w-5"></i>
+              <span>Rooms</span>
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="/my-bookings" class="flex items-center py-3 px-6 hover:bg-blue-800 transition-colors duration-200">
+              <i class="fas fa-calendar-check mr-3 w-5"></i>
+              <span>My Bookings</span>
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="#" class="flex items-center py-3 px-6 hover:bg-blue-800 transition-colors duration-200">
+              <i class="fas fa-user mr-3 w-5"></i>
+              <span>Profile</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="mt-auto p-6 border-t border-blue-800">
+        <a href="/logout" class="flex items-center text-blue-200 hover:text-white transition-colors duration-200">
+          <i class="fas fa-sign-out-alt mr-3"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top navigation -->
+      <header class="bg-white shadow-sm">
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center">
+            <button class="text-gray-500 focus:outline-none lg:hidden">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h2 class="ml-4 text-xl font-semibold text-gray-800">Dashboard</h2>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <button class="flex items-center text-gray-500 hover:text-blue-600">
+              <i class="fas fa-bell"></i>
+              <span class="absolute w-2 h-2 bg-red-500 rounded-full top-0 right-0"></span>
+            </button>
+            <div class="relative">
+              <button class="flex items-center focus:outline-none">
+                <img class="h-8 w-8 rounded-full object-cover" src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}" alt="User profile">
+                <span class="ml-2 text-sm font-medium text-gray-700">{{ current_user.username }}</span>
+                <i class="fas fa-chevron-down ml-1 text-xs text-gray-500"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Dashboard Content -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-4">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-gray-500 text-sm">Total Bookings</h3>
+                <p class="text-2xl font-semibold text-gray-800">{{ total_bookings }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-green-100 text-green-600">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-gray-500 text-sm">Revenue</h3>
+                <p class="text-2xl font-semibold text-gray-800">${{ "%.2f"|format(revenue) }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-gray-500 text-sm">Upcoming Check-ins</h3>
+                <p class="text-2xl font-semibold text-gray-800">{{ upcoming_checkins }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-red-100 text-red-600">
+                <i class="fas fa-hotel"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-gray-500 text-sm">Occupancy Rate</h3>
+                {% set total_rooms = room_availability|sum(attribute='total') %}
+                {% set booked_rooms = room_availability|sum(attribute='total') - room_availability|sum(attribute='available') %}
+                <p class="text-2xl font-semibold text-gray-800">
+                  {{ "%.0f"|format((booked_rooms / total_rooms * 100) if total_rooms > 0 else 0) }}%
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Recent Bookings & Availability -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Recent Bookings -->
+          <div class="lg:col-span-2 bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="font-semibold text-lg text-gray-800">Recent Bookings</h2>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-gray-50 text-gray-700 text-sm">
+                    <th class="py-3 px-6 text-left">Guest</th>
+                    <th class="py-3 px-6 text-left">Room</th>
+                    <th class="py-3 px-6 text-left">Check In</th>
+                    <th class="py-3 px-6 text-left">Check Out</th>
+                    <th class="py-3 px-6 text-left">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for booking in recent_bookings %}
+                  <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="py-4 px-6">
+                      <div class="flex items-center">
+                        <img class="h-8 w-8 rounded-full" src="{{ url_for('static', filename='profile_pics/' + booking.user.image_file) }}" alt="Guest">
+                        <span class="ml-2">{{ booking.user.username }}</span>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">{{ booking.room.type }}</td>
+                    <td class="py-4 px-6">{{ booking.check_in_date.strftime('%b %d, %Y') }}</td>
+                    <td class="py-4 px-6">{{ booking.check_out_date.strftime('%b %d, %Y') }}</td>
+                    <td class="py-4 px-6">
+                      {% if booking.status == 'confirmed' %}
+                      <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">Confirmed</span>
+                      {% elif booking.status == 'checked_in' %}
+                      <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">Checked In</span>
+                      {% else %}
+                      <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">Pending</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200">
+              <a href="/my-bookings" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View all bookings →</a>
+            </div>
+          </div>
+          
+          <!-- Room Availability -->
+          <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="font-semibold text-lg text-gray-800">Room Availability</h2>
+            </div>
+            <div class="p-6">
+              <div class="mb-4">
+                <h3 class="text-gray-700 mb-2">Today's Availability</h3>
+                {% set total_rooms = room_availability|sum(attribute='total') %}
+                {% set booked_rooms = room_availability|sum(attribute='total') - room_availability|sum(attribute='available') %}
+                {% set occupancy_rate = (booked_rooms / total_rooms * 100) if total_rooms > 0 else 0 %}
+                <div class="flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ occupancy_rate }}%"></div>
+                  </div>
+                  <span class="ml-2 text-sm text-gray-500">{{ "%.0f"|format(occupancy_rate) }}%</span>
+                </div>
+              </div>
+              
+              <h3 class="text-gray-700 mb-2 mt-6">Room Types</h3>
+              <div class="space-y-3">
+                {% for room in room_availability %}
+                <div class="flex justify-between items-center">
+                  <div>
+                    <span class="text-gray-700">{{ room.type }}</span>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                      <div class="
+                        {% if room.percentage > 80 %}bg-red-500
+                        {% elif room.percentage > 60 %}bg-yellow-500
+                        {% else %}bg-green-500
+                        {% endif %} h-2.5 rounded-full" style="width: {{ room.percentage }}%">
+                      </div>
+                    </div>
+                  </div>
+                  <span class="text-gray-500 text-sm">{{ room.available }}/{{ room.total }} available</span>
+                </div>
+                {% endfor %}
+              </div>
+              
+              <div class="mt-6">
+                <a href="/rooms" class="block text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-200">
+                  Book a Room
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

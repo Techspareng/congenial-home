@@ -374,6 +374,7 @@
             }
         }
     </style>
+    
 </head>
 <body>
     <!-- Header -->
@@ -385,8 +386,8 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Rooms</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/rooms">Rooms</a></li>
                         <li><a href="#">About Us</a></li>
                         <li><a href="#">Services</a></li>
                         <li><a href="#">Blog</a></li>
@@ -403,7 +404,7 @@
             <div class="hero-content">
                 <h1>Experience Luxury & Comfort</h1>
                 <p>Discover the perfect blend of luxury, comfort, and exceptional service for an unforgettable stay.</p>
-                <a href="/login" class="btn">BOOK NOW</a>
+                <a href="/login" class="btn" onclick="openBookingModal(1, 'LUXE Hotel')">BOOK NOW</a>
             </div>
         </div>
     </section>
@@ -411,55 +412,69 @@
     <!-- Booking Form -->
     <section>
         <div class="container">
-            <div class="booking-form">
-                <form>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Check-in Date</label>
-                            <input type="date" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Check-out Date</label>
-                            <input type="date" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Adults</label>
-                            <select class="form-control">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4+</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Children</label>
-                            <select class="form-control">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3+</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Room Type</label>
-                            <select class="form-control">
-                                <option>Standard</option>
-                                <option>Deluxe</option>
-                                <option>Suite</option>
-                                <option>Executive</option>
-                            </select>
-                        </div>
+            <form id="bookingForm" method="GET" action="/search">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Check-in Date</label>
+                        <input type="date" class="form-control" name="check_in" required>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn">CHECK AVAILABILITY</button>
+                        <label>Check-out Date</label>
+                        <input type="date" class="form-control" name="check_out" required>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Adults</label>
+                        <select class="form-control" name="guests">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Children</label>
+                        <select class="form-control" name="children">
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Room Type</label>
+                        <select class="form-control" name="room_type">
+                            <option>Standard</option>
+                            <option>Deluxe</option>
+                            <option>Suite</option>
+                            <option>Executive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">CHECK AVAILABILITY</button>
+                </div>
+            </form>
+            
+            <!-- Placeholder for displaying room results -->
+            <div id="searchResults"></div>
+            
         </div>
     </section>
-
+    <div id="searchResults">
+        {% if hotels %}
+            <h2>Available Rooms</h2>
+            {% for hotel in hotels %}
+                <div class="hotel-card">
+                    <h3>{{ hotel.name }}</h3>
+                    <p>{{ hotel.description }}</p>
+                    <button class="btn" onclick="openBookingModal({{ hotel.id }}, '{{ hotel.name }}')">BOOK NOW</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
     <!-- About Section -->
     <section class="about">
         <div class="container">
@@ -601,6 +616,95 @@
                 <p>&copy; 2025 LUXE Hotel. All rights reserved.</p>
             </div>
         </div>
+        <!-- Booking Modal -->
+<div id="bookingModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeBookingModal()">&times;</span>
+        <h2>Book at <span id="hotelNameModal"></span></h2>
+
+        <form method="POST" id="bookingForm">
+            <input type="hidden" name="hotel_id" id="modalHotelId">
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contact">Contact Info</label>
+                <input type="text" name="contact" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="payment">Payment Method</label>
+                <select name="payment" class="form-control" required>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Cash">Cash</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn">Confirm Booking</button>
+        </form>
+    </div>
+</div>
+{% for hotel in hotels %}
+    <div class="hotel-card">
+        <h3>{{ hotel.name }}</h3>
+        <button class="btn" onclick="openBookingModal({{ hotel.id }}, '{{ hotel.name }}')">BOOK NOW</button>
+    </div>
+{% endfor %}
+
     </footer>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+        
+            const form = e.target;
+            const params = new URLSearchParams(new FormData(form)).toString();
+        
+            fetch(`/search?${params}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('searchResults').innerHTML = html;
+                })
+                .catch(err => {
+                    console.error('Search failed:', err);
+                });
+        });
+        </script>
+        <script>
+            function openBookingModal(hotelId, hotelName) {
+                document.getElementById('modalHotelId').value = hotelId;
+                document.getElementById('hotelNameModal').textContent = hotelName;
+                document.getElementById('bookingModal').style.display = 'block';
+            }
+            
+        
+            function closeBookingModal() {
+                document.getElementById('bookingModal').style.display = 'none';
+            }
+        
+            // Submit form via JavaScript to keep user on same page
+            document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
+        
+                const response = await fetch(`/book/${formData.get('hotel_id')}`, {
+                    method: 'POST',
+                    body: formData
+                });
+        
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    alert('Booking failed');
+                }
+            });
+        </script>
+        
+        
 </body>
 </html>

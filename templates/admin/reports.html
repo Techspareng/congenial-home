@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Luxury Hotel & Resort</title>
+    <title>Reports - Luxury Hotel & Resort</title>
     <style>
         /* Your existing styles from the login page */
         * {
@@ -124,19 +124,50 @@
             background-color: #c69c6d;
         }
         
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 14px;
+        .btn-secondary {
+            background-color: #6c757d;
         }
         
-        .btn-danger {
-            background-color: #dc3545;
+        .btn-secondary:hover {
+            background-color: #5a6268;
         }
         
-        .btn-danger:hover {
-            background-color: #c82333;
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
+        .stat-card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #dfa974;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #707079;
+            font-size: 16px;
+        }
+        
+        /* Charts */
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        /* Occupancy Table */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -153,20 +184,17 @@
             font-weight: 600;
         }
         
-        tr:hover {
-            background-color: #f8f9fa;
+        .progress-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            height: 10px;
         }
         
-        .status-pending {
-            color: #ffc107;
-        }
-        
-        .status-confirmed {
-            color: #28a745;
-        }
-        
-        .status-cancelled {
-            color: #dc3545;
+        .progress-bar {
+            height: 100%;
+            border-radius: 5px;
+            background-color: #dfa974;
         }
         
         /* Flash messages */
@@ -211,6 +239,8 @@
             }
         }
     </style>
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -223,6 +253,8 @@
                 <nav>
                     <ul>
                         <li><a href="/admin">Dashboard</a></li>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="/admin/reports">Reports</a></li>
                         <li><a href="/">View Site</a></li>
                         <li><a href="/logout">Logout</a></li>
                     </ul>
@@ -231,7 +263,7 @@
         </div>
     </header>
 
-    <!-- Admin Dashboard Section -->
+    <!-- Admin Reports Section -->
     <section class="admin-section">
         <div class="container">
             <!-- Flash Messages Display -->
@@ -247,74 +279,73 @@
             
             <div class="admin-header">
                 <div class="admin-title">
-                    <h2>Admin Dashboard</h2>
+                    <h2>Hotel Performance Reports</h2>
                 </div>
                 <div class="admin-actions">
-                    <a href="/admin/hotel/add" class="btn">Add New Hotel</a>
+                    <a href="/admin" class="btn btn-secondary">Back to Dashboard</a>
                 </div>
             </div>
             
-            <!-- Recent Bookings Card -->
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Bookings</div>
+                    <div class="stat-value">{{ total_bookings }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value">${{ "%.2f"|format(total_revenue) }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Monthly Bookings</div>
+                    <div class="stat-value">{{ monthly_bookings }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Monthly Revenue</div>
+                    <div class="stat-value">${{ "%.2f"|format(monthly_revenue) }}</div>
+                </div>
+            </div>
+            
+            <!-- Revenue Chart -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Recent Bookings</h3>
+                    <h3 class="card-title">Revenue Trends</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Occupancy Rates -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Room Occupancy Rates</h3>
                 </div>
                 <div class="card-body">
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Guest</th>
+                                <th>Room Type</th>
                                 <th>Hotel</th>
-                                <th>Room</th>
-                                <th>Check-In</th>
-                                <th>Check-Out</th>
-                                <th>Status</th>
+                                <th>Occupancy Rate</th>
+                                <th>Progress</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for booking in bookings %}
+                            {% for room in rooms %}
                             <tr>
-                                <td>{{ booking.id }}</td>
-                                <td>{{ booking.guest_name }}</td>
-                                <td>{{ booking.room.hotel.name }}</td>
-                                <td>{{ booking.room.type }}</td>
-                                <td>{{ booking.check_in_date.strftime('%Y-%m-%d') }}</td>
-                                <td>{{ booking.check_out_date.strftime('%Y-%m-%d') }}</td>
-                                <td class="status-{{ booking.status }}">{{ booking.status|capitalize }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Hotels Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Hotels</h3>
-                </div>
-                <div class="card-body">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Contact</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for hotel in hotels %}
-                            <tr>
-                                <td>{{ hotel.id }}</td>
-                                <td>{{ hotel.name }}</td>
-                                <td>{{ hotel.address }}</td>
-                                <td>{{ hotel.contact }}</td>
+                                <td>{{ room.type }}</td>
+                                <td>{{ room.hotel.name }}</td>
+                                <td>{{ "%.1f"|format(occupancy_rates[room.id]) }}%</td>
                                 <td>
-                                    <a href="/admin/room/{{ hotel.id }}/add" class="btn btn-sm">Add Room</a>
-                                    <a href="/admin/hotel/{{ hotel.id }}/special-rates" class="btn btn-sm">Special Rates</a>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: {{ occupancy_rates[room.id] }}%"></div>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -333,5 +364,36 @@
             </div>
         </div>
     </footer>
+
+    <!-- Chart.js Script -->
+    <script>
+        // Sample data for the revenue chart
+        // In a real application, you would replace this with actual data from your backend
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Monthly Revenue ($)',
+                    data: [12000, 19000, 15000, 18000, 22000, 25000, 28000, 26000, 24000, 21000, 23000, 30000],
+                    backgroundColor: 'rgba(223, 169, 116, 0.2)',
+                    borderColor: 'rgba(223, 169, 116, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

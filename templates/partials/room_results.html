@@ -1,0 +1,15 @@
+{% if rooms %}
+    <div class="available-rooms">
+        {% for room in rooms %}
+            <div class="room-item">
+                <h3>{{ room.room_type }}</h3>
+                <p>Capacity: {{ room.capacity }} guests</p>
+                <p>Price: ${{ room.price }}/night</p>
+                <p>Amenities: {{ room.amenities }}</p>
+                <a href="#" class="btn">Book Now</a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No rooms available for the selected criteria.</p>
+{% endif %}

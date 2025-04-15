@@ -3,10 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Bookings</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Manage Bookings - Luxury Hotel & Resort</title>
+    <style>
+        /* Your existing styles from the login page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #dfa974;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #c69c6d;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #222736;
+            padding: 20px 0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        /* Admin Dashboard Styles */
+        .admin-section {
+            padding: 40px 0;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .admin-title h2 {
+            font-size: 32px;
+            color: #19191a;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            color: #19191a;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #dfa974;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c69c6d;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-pending {
+            color: #ffc107;
+        }
+        
+        .status-confirmed {
+            color: #28a745;
+        }
+        
+        .status-cancelled {
+            color: #dc3545;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Search and filter */
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+        }
+        
+        .filter-dropdown {
+            margin-left: 15px;
+        }
+        
+        .filter-dropdown select {
+            padding: 10px 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+        }
+        
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-message {
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 20px;
+            background-color: #222736;
+            color: #aaaab3;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .admin-actions {
+                margin-top: 15px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .filter-dropdown {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -15,8 +308,10 @@
                 </div>
                 <nav>
                     <ul>
+                        <li><a href="/admin">Dashboard</a></li>
                         <li><a href="/admin/bookings">Bookings</a></li>
                         <li><a href="/admin/reports">Reports</a></li>
+                        <li><a href="/">View Site</a></li>
                         <li><a href="/logout">Logout</a></li>
                     </ul>
                 </nav>
@@ -24,39 +319,536 @@
         </div>
     </header>
 
+    <!-- Admin Bookings Section -->
     <section class="admin-section">
         <div class="container">
-            <h2>Manage Bookings</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Guest</th>
-                        <th>Room</th>
-                        <th>Check-in</th>
-                        <th>Check-out</th>
-                        <th>Total Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for booking in bookings %}
-                    <tr>
-                        <td>{{ booking.id }}</td>
-                        <td>{{ booking.guest_name }}</td>
-                        <td>{{ booking.room_id }}</td>
-                        <td>{{ booking.check_in }}</td>
-                        <td>{{ booking.check_out }}</td>
-                        <td>${{ booking.total_price }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <!-- Flash Messages Display -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message {% if category == 'success' %}flash-success{% endif %}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            
+            <div class="admin-header">
+                <div class="admin-title">
+                    <h2>Manage Bookings</h2>
+                </div>
+                <div class="admin-actions">
+                    <a href="/admin" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+            
+            <!-- Search and Filter -->
+            <div class="search-filter">
+                <div class="search-box">
+                    <input type="text" placeholder="Search bookings...">
+                </div>
+                <div class="filter-dropdown">
+                    <select>
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Bookings Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">All Bookings</h3>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Guest</th>
+                                <th>Hotel</th>
+                                <th>Room</th>
+                                <th>Dates</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>#{{ booking.id }}</td>
+                                <td>{{ booking.guest_name }}</td>
+                                <td>{{ booking.room.hotel.name }}</td>
+                                <td>{{ booking.room.type }}</td>
+                                <td>
+                                    {{ booking.check_in_date.strftime('%b %d, %Y') }} - 
+                                    {{ booking.check_out_date.strftime('%b %d, %Y') }}
+                                </td>
+                                <td>${{ "%.2f"|format(booking.total_price) }}</td>
+                                <td>
+                                    <span class="badge badge-{{ booking.booking_status }}">
+                                        {{ booking.booking_status|capitalize }}
+                                    </span>
+                                </td>
+                                <td class="actions">
+                                    {% if booking.booking_status == 'pending' %}
+                                    <form action="/admin/booking/{{ booking.id }}/status" method="POST" style="display: inline;">
+                                        <input type="hidden" name="status" value="confirmed">
+                                        <button type="submit" class="btn btn-success btn-sm">Confirm</button>
+                                    </form>
+                                    <form action="/admin/booking/{{ booking.id }}/status" method="POST" style="display: inline;">
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                    </form>
+                                    {% else %}
+                                    <span class="text-muted">No actions</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2025 LUXE Hotel. All rights reserved.</p>
+            <div class="copyright">
+                <p>&copy; 2025 LUXE Hotel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bookings - Luxury Hotel & Resort</title>
+    <style>
+        /* Your existing styles from the login page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #dfa974;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #c69c6d;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #222736;
+            padding: 20px 0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        /* Admin Dashboard Styles */
+        .admin-section {
+            padding: 40px 0;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .admin-title h2 {
+            font-size: 32px;
+            color: #19191a;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            color: #19191a;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #dfa974;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c69c6d;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-pending {
+            color: #ffc107;
+        }
+        
+        .status-confirmed {
+            color: #28a745;
+        }
+        
+        .status-cancelled {
+            color: #dc3545;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Search and filter */
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+        }
+        
+        .filter-dropdown {
+            margin-left: 15px;
+        }
+        
+        .filter-dropdown select {
+            padding: 10px 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+        }
+        
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-message {
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 20px;
+            background-color: #222736;
+            color: #aaaab3;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .admin-actions {
+                margin-top: 15px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .filter-dropdown {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/">LUXE</a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/admin">Dashboard</a></li>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="/admin/reports">Reports</a></li>
+                        <li><a href="/">View Site</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Bookings Section -->
+    <section class="admin-section">
+        <div class="container">
+            <!-- Flash Messages Display -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message {% if category == 'success' %}flash-success{% endif %}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            
+            <div class="admin-header">
+                <div class="admin-title">
+                    <h2>Manage Bookings</h2>
+                </div>
+                <div class="admin-actions">
+                    <a href="/admin" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+            
+            <!-- Search and Filter -->
+            <div class="search-filter">
+                <div class="search-box">
+                    <input type="text" placeholder="Search bookings...">
+                </div>
+                <div class="filter-dropdown">
+                    <select>
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Bookings Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">All Bookings</h3>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Guest</th>
+                                <th>Hotel</th>
+                                <th>Room</th>
+                                <th>Dates</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>#{{ booking.id }}</td>
+                                <td>{{ booking.guest_name }}</td>
+                                <td>{{ booking.room.hotel.name }}</td>
+                                <td>{{ booking.room.type }}</td>
+                                <td>
+                                    {{ booking.check_in_date.strftime('%b %d, %Y') }} - 
+                                    {{ booking.check_out_date.strftime('%b %d, %Y') }}
+                                </td>
+                                <td>${{ "%.2f"|format(booking.total_price) }}</td>
+                                <td>
+                                    <span class="badge badge-{{ booking.booking_status }}">
+                                        {{ booking.booking_status|capitalize }}
+                                    </span>
+                                </td>
+                                <td class="actions">
+                                    {% if booking.booking_status == 'pending' %}
+                                    <form action="/admin/booking/{{ booking.id }}/status" method="POST" style="display: inline;">
+                                        <input type="hidden" name="status" value="confirmed">
+                                        <button type="submit" class="btn btn-success btn-sm">Confirm</button>
+                                    </form>
+                                    <form action="/admin/booking/{{ booking.id }}/status" method="POST" style="display: inline;">
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                    </form>
+                                    {% else %}
+                                    <span class="text-muted">No actions</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2025 LUXE Hotel. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 </body>

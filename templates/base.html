@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LuxStay Hotels{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#ec4899',
+                        success: '#22c55e',
+                        warning: '#eab308',
+                        danger: '#ef4444',
+                        background: '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-4 right-4 z-50 space-y-2">
+                {% for category, message in messages %}
+                    <div class="px-6 py-4 rounded-lg shadow-lg text-white 
+                        {% if category == 'success' %}bg-green-500
+                        {% elif category == 'error' or category == 'danger' %}bg-red-500
+                        {% elif category == 'warning' %}bg-yellow-500
+                        {% else %}bg-blue-500{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="bg-blue-900 text-white w-64 flex flex-col">
+            <div class="p-6 border-b border-blue-800">
+                <h1 class="text-2xl font-bold">LuxStay Hotels</h1>
+            </div>
+            
+            <nav class="flex-1 pt-6">
+                <ul>
+                    <li class="mb-2">
+                        <a href="{{ url_for('dashboard') }}" class="flex items-center py-3 px-6 {% if request.endpoint == 'dashboard' %}bg-blue-800{% else %}hover:bg-blue-800{% endif %} transition-colors duration-200">
+                            <i class="fas fa-chart-line mr-3 w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('rooms') }}" class="flex items-center py-3 px-6 {% if request.endpoint == 'rooms' %}bg-blue-800{% else %}hover:bg-blue-800{% endif %} transition-colors duration-200">
+                            <i class="fas fa-hotel mr-3 w-5"></i>
+                            <span>Rooms</span>
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('my_bookings') }}" class="flex items-center py-3 px-6 {% if request.endpoint == 'my_bookings' %}bg-blue-800{% else %}hover:bg-blue-800{% endif %} transition-colors duration-200">
+                            <i class="fas fa-calendar-check mr-3 w-5"></i>
+                            <span>My Bookings</span>
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('profile') }}" class="flex items-center py-3 px-6 {% if request.endpoint == 'profile' %}bg-blue-800{% else %}hover:bg-blue-800{% endif %} transition-colors duration-200">
+                            <i class="fas fa-user mr-3 w-5"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="mt-auto p-6 border-t border-blue-800">
+                <a href="{{ url_for('logout') }}" class="flex items-center text-blue-200 hover:text-white transition-colors duration-200">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center">
+                        <button class="text-gray-500 focus:outline-none lg:hidden" id="sidebar-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="ml-4 text-xl font-semibold text-gray-800">{% block page_title %}{% endblock %}</h2>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button class="flex items-center text-gray-500 hover:text-blue-600 relative">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute w-2 h-2 bg-red-500 rounded-full top-0 right-0"></span>
+                        </button>
+                        <div class="relative">
+                            <button class="flex items-center focus:outline-none">
+                                <img class="h-8 w-8 rounded-full object-cover" src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}" alt="User profile">
+                                <span class="ml-2 text-sm font-medium text-gray-700">{{ current_user.username }}</span>
+                                <i class="fas fa-chevron-down ml-1 text-xs text-gray-500"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main content area -->
+            <main class="flex-1 overflow-y-auto bg-gray-50 p-4">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.querySelector('.bg-blue-900').classList.toggle('hidden');
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

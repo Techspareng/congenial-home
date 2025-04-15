@@ -1,552 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Add Room - LUXE Admin</title>
-<style>
- /* Reset and base styles */
- * {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
- }
- body {
- font-family: 'Arial', sans-serif;
- color: #333;
- line-height: 1.6;
- background-color: #f8f9fa;
- }
- a {
- text-decoration: none;
- color: #dfa974;
- transition: color 0.3s;
- }
- a:hover {
- color: #c69c6d;
- }
- /* Admin styles */
- .admin-container {
- display: flex;
- min-height: 100vh;
- }
- /* Sidebar styles */
- .admin-sidebar {
- width: 250px;
- background-color: #222736;
- color: #fff;
- padding: 20px 0;
- position: fixed;
- height: 100%;
- overflow-y: auto;
- }
- .admin-logo {
- padding: 0 20px 20px;
- border-bottom: 1px solid #3d4461;
- margin-bottom: 20px;
- }
- .admin-logo a {
- font-size: 24px;
- font-weight: 700;
- color: #fff;
- }
- .admin-nav ul {
- list-style: none;
- }
- .admin-nav ul li {
- margin-bottom: 5px;
- }
- .admin-nav ul li a {
- display: block;
- padding: 10px 20px;
- color: #aaaab3;
- font-weight: 500;
- transition: all 0.3s;
- }
- .admin-nav ul li a:hover,
- .admin-nav ul li a.active {
- background-color: #2c3143;
- color: #dfa974;
- }
- .admin-nav ul li a i {
- margin-right: 10px;
- width: 20px;
- text-align: center;
- }
- /* Main content styles */
- .admin-content {
- flex: 1;
- margin-left: 250px;
- padding: 20px;
- }
- .admin-header {
- background-color: #fff;
- padding: 15px 20px;
- box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
- margin-bottom: 20px;
- border-radius: 5px;
- display: flex;
- justify-content: space-between;
- align-items: center;
- }
- .admin-header h1 {
- font-size: 24px;
- color: #19191a;
- }
- .admin-header .breadcrumb {
- display: flex;
- list-style: none;
- }
- .admin-header .breadcrumb li {
- margin-right: 5px;
- }
- .admin-header .breadcrumb li:after {
- content: '/';
- margin-left: 5px;
- color: #707079;
- }
- .admin-header .breadcrumb li:last-child:after {
- content: '';
- }
- .admin-header .breadcrumb li a {
- color: #707079;
- }
- .admin-header .breadcrumb li.active {
- color: #dfa974;
- }
- /* Card styles */
- .card {
- background-color: #fff;
- border-radius: 5px;
- box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
- padding: 20px;
- margin-bottom: 20px;
- transition: all 0.3s;
- }
- .card:hover {
- box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
- }
- .card-header {
- font-size: 20px;
- margin-bottom: 15px;
- color: #19191a;
- }
- 
- /* Form styles */
- .form-group {
- margin-bottom: 20px;
- }
- .form-group label {
- display: block;
- margin-bottom: 8px;
- font-weight: 600;
- color: #19191a;
- }
- .form-control {
- width: 100%;
- padding: 12px 15px;
- border: 1px solid #e4e8f1;
- border-radius: 4px;
- font-size: 14px;
- color: #333;
- transition: border-color 0.3s;
- }
- .form-control:focus {
- border-color: #dfa974;
- outline: none;
- }
- textarea.form-control {
- min-height: 120px;
- resize: vertical;
- }
- .form-row {
- display: flex;
- flex-wrap: wrap;
- margin: 0 -10px;
- }
- .form-col {
- flex: 1;
- padding: 0 10px;
- min-width: 200px;
- }
- .form-check {
- display: flex;
- align-items: center;
- margin-bottom: 10px;
- }
- .form-check input {
- margin-right: 10px;
- }
- .img-upload {
- display: flex;
- flex-direction: column;
- }
- .img-preview {
- width: 100%;
- height: 200px;
- background-color: #f5f5f5;
- border: 1px dashed #ddd;
- border-radius: 4px;
- display: flex;
- align-items: center;
- justify-content: center;
- margin-bottom: 10px;
- overflow: hidden;
- }
- .img-preview img {
- max-width: 100%;
- max-height: 100%;
- }
- .img-upload-btn {
- display: inline-block;
- padding: 8px 16px;
- background-color: #f5f5f5;
- border: 1px solid #ddd;
- border-radius: 4px;
- cursor: pointer;
- text-align: center;
- transition: all 0.3s;
- }
- .img-upload-btn:hover {
- background-color: #eee;
- }
- .img-upload input[type="file"] {
- display: none;
- }
- .btn {
- display: inline-block;
- padding: 12px 30px;
- font-size: 16px;
- font-weight: 600;
- border: none;
- border-radius: 4px;
- cursor: pointer;
- transition: all 0.3s;
- }
- .btn-primary {
- background-color: #dfa974;
- color: #fff;
- }
- .btn-primary:hover {
- background-color: #c69c6d;
- }
- .btn-secondary {
- background-color: #6c757d;
- color: #fff;
- }
- .btn-secondary:hover {
- background-color: #5a6268;
- }
- .form-actions {
- display: flex;
- justify-content: flex-end;
- gap: 10px;
- margin-top: 20px;
- }
- /* Font Awesome icons */
- .fa {
- display: inline-block;
- font-style: normal;
- font-variant: normal;
- text-rendering: auto;
- line-height: 1;
- }
- .fa-tachometer-alt:before { content: "\f3fd"; }
- .fa-bed:before { content: "\f236"; }
- .fa-concierge-bell:before { content: "\f562"; }
- .fa-calendar-alt:before { content: "\f073"; }
- .fa-users:before { content: "\f0c0"; }
- .fa-comments:before { content: "\f086"; }
- .fa-cog:before { content: "\f013"; }
- .fa-sign-out-alt:before { content: "\f2f5"; }
-</style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Room - Luxury Hotel & Resort</title>
+    <style>
+        /* Your existing styles from the login page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #dfa974;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #c69c6d;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #222736;
+            padding: 20px 0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        /* Form styles */
+        .form-section {
+            padding: 40px 0;
+        }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-title h2 {
+            font-size: 32px;
+            color: #19191a;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #dfa974;
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #dfa974;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c69c6d;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-message {
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 20px;
+            background-color: #222736;
+            color: #aaaab3;
+        }
+    </style>
 </head>
 <body>
-    <div class="admin-container">
-        <!-- Sidebar -->
-        <div class="admin-sidebar">
-            <div class="admin-logo">
-                <a href="index.html">LUXE</a>
-            </div>
-            <div class="admin-nav">
-                <ul>
-                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="rooms.html" class="active"><i class="fas fa-bed"></i> Rooms</a></li>
-                    <li><a href="services.html"><i class="fas fa-concierge-bell"></i> Services</a></li>
-                    <li><a href="bookings.html"><i class="fas fa-calendar-alt"></i> Bookings</a></li>
-                    <li><a href="guests.html"><i class="fas fa-users"></i> Guests</a></li>
-                    <li><a href="reviews.html"><i class="fas fa-comments"></i> Reviews</a></li>
-                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
-                    <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/">LUXE</a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/admin">Dashboard</a></li>
+                        <li><a href="/">View Site</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
+    </header>
 
-        <!-- Main Content -->
-        <div class="admin-content">
-            <!-- Header -->
-            <div class="admin-header">
-                <h1>Add New Room</h1>
-                <ul class="breadcrumb">
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="rooms.html">Rooms</a></li>
-                    <li class="active">Add Room</li>
-                </ul>
+    <!-- Form Section -->
+    <section class="form-section">
+        <div class="container">
+            <!-- Flash Messages Display -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message {% if category == 'success' %}flash-success{% endif %}">{{ message }}</div>
+                {% endfor %}
             </div>
-
-            <!-- Add Room Form -->
-            <div class="card">
-                <h2 class="card-header">Room Information</h2>
-                <form id="addRoomForm" action="process-room.php" method="POST" enctype="multipart/form-data">
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="roomName">Room Name</label>
-                                <input type="text" id="roomName" name="roomName" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="roomType">Room Type</label>
-                                <select id="roomType" name="roomType" class="form-control" required>
-                                    <option value="">Select Room Type</option>
-                                    <option value="standard">Standard Room</option>
-                                    <option value="deluxe">Deluxe Room</option>
-                                    <option value="suite">Suite</option>
-                                    <option value="presidential">Presidential Suite</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="roomPrice">Price Per Night ($)</label>
-                                <input type="number" id="roomPrice" name="roomPrice" min="0" step="0.01" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="roomSize">Room Size (sqft)</label>
-                                <input type="number" id="roomSize" name="roomSize" min="0" class="form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="capacity">Capacity</label>
-                                <select id="capacity" name="capacity" class="form-control" required>
-                                    <option value="">Select Capacity</option>
-                                    <option value="1">1 Person</option>
-                                    <option value="2">2 People</option>
-                                    <option value="3">3 People</option>
-                                    <option value="4">4 People</option>
-                                    <option value="5">5+ People</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="beds">Bed Type</label>
-                                <select id="beds" name="beds" class="form-control" required>
-                                    <option value="">Select Bed Type</option>
-                                    <option value="single">Single Bed</option>
-                                    <option value="double">Double Bed</option>
-                                    <option value="queen">Queen Size</option>
-                                    <option value="king">King Size</option>
-                                    <option value="multiple">Multiple Beds</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
+            {% endif %}
+            {% endwith %}
+            
+            <div class="form-container">
+                <div class="form-title">
+                    <h2>Add New Room</h2>
+                </div>
+                
+                <form action="/admin/room/{{ hotel_id }}/add" method="POST">
                     <div class="form-group">
-                        <label for="roomDescription">Room Description</label>
-                        <textarea id="roomDescription" name="roomDescription" class="form-control" required></textarea>
+                        <label for="type">Room Type</label>
+                        <input type="text" id="type" name="type" class="form-control" required>
                     </div>
-
+                    
                     <div class="form-group">
-                        <label>Room Features</label>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-check">
-                                    <input type="checkbox" id="wifi" name="features[]" value="wifi">
-                                    <label for="wifi">Free WiFi</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="ac" name="features[]" value="ac">
-                                    <label for="ac">Air Conditioning</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="tv" name="features[]" value="tv">
-                                    <label for="tv">Flat-screen TV</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="minibar" name="features[]" value="minibar">
-                                    <label for="minibar">Minibar</label>
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-check">
-                                    <input type="checkbox" id="breakfast" name="features[]" value="breakfast">
-                                    <label for="breakfast">Breakfast Included</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="bathtub" name="features[]" value="bathtub">
-                                    <label for="bathtub">Bathtub</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="balcony" name="features[]" value="balcony">
-                                    <label for="balcony">Balcony/Terrace</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="roomService" name="features[]" value="roomService">
-                                    <label for="roomService">Room Service</label>
-                                </div>
-                            </div>
-                        </div>
+                        <label for="base_price">Base Price ($)</label>
+                        <input type="number" step="0.01" id="base_price" name="base_price" class="form-control" required>
                     </div>
-
+                    
                     <div class="form-group">
-                        <label>Room Images</label>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="img-upload">
-                                    <div class="img-preview" id="preview1">
-                                        <span>Main Image</span>
-                                    </div>
-                                    <label for="mainImage" class="img-upload-btn">
-                                        <i class="fas fa-upload"></i> Upload Main Image
-                                    </label>
-                                    <input type="file" id="mainImage" name="mainImage" accept="image/*" required>
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="img-upload">
-                                    <div class="img-preview" id="preview2">
-                                        <span>Additional Image</span>
-                                    </div>
-                                    <label for="additionalImage1" class="img-upload-btn">
-                                        <i class="fas fa-upload"></i> Upload Additional Image
-                                    </label>
-                                    <input type="file" id="additionalImage1" name="additionalImages[]" accept="image/*">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row" style="margin-top: 15px;">
-                            <div class="form-col">
-                                <div class="img-upload">
-                                    <div class="img-preview" id="preview3">
-                                        <span>Additional Image</span>
-                                    </div>
-                                    <label for="additionalImage2" class="img-upload-btn">
-                                        <i class="fas fa-upload"></i> Upload Additional Image
-                                    </label>
-                                    <input type="file" id="additionalImage2" name="additionalImages[]" accept="image/*">
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="img-upload">
-                                    <div class="img-preview" id="preview4">
-                                        <span>Additional Image</span>
-                                    </div>
-                                    <label for="additionalImage3" class="img-upload-btn">
-                                        <i class="fas fa-upload"></i> Upload Additional Image
-                                    </label>
-                                    <input type="file" id="additionalImage3" name="additionalImages[]" accept="image/*">
-                                </div>
-                            </div>
-                        </div>
+                        <label for="weekend_price">Weekend Price ($)</label>
+                        <input type="number" step="0.01" id="weekend_price" name="weekend_price" class="form-control" required>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="roomStatus">Room Status</label>
-                                <select id="roomStatus" name="roomStatus" class="form-control" required>
-                                    <option value="available">Available</option>
-                                    <option value="occupied">Occupied</option>
-                                    <option value="maintenance">Under Maintenance</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="roomNumber">Room Number</label>
-                                <input type="text" id="roomNumber" name="roomNumber" class="form-control" required>
-                            </div>
-                        </div>
+                    
+                    <div class="form-group">
+                        <label for="capacity">Capacity</label>
+                        <input type="number" id="capacity" name="capacity" class="form-control" required>
                     </div>
-
+                    
+                    <div class="form-group">
+                        <label for="max_guests">Maximum Guests</label>
+                        <input type="number" id="max_guests" name="max_guests" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" class="form-control" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amenities">Amenities (comma separated)</label>
+                        <input type="text" id="amenities" name="amenities" class="form-control" placeholder="e.g. King bed, TV, Mini-bar, Air conditioning" required>
+                    </div>
+                    
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" onclick="window.location.href='rooms.html'">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Room</button>
+                        <a href="/admin" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn">Save Room</button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
+    </section>
 
-    <script>
-        // Preview uploaded images
-        function previewImage(input, previewId) {
-            const preview = document.getElementById(previewId);
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    preview.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    preview.appendChild(img);
-                }
-                
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // Add event listeners for image uploads
-        document.getElementById('mainImage').addEventListener('change', function() {
-            previewImage(this, 'preview1');
-        });
-        
-        document.getElementById('additionalImage1').addEventListener('change', function() {
-            previewImage(this, 'preview2');
-        });
-        
-        document.getElementById('additionalImage2').addEventListener('change', function() {
-            previewImage(this, 'preview3');
-        });
-        
-        document.getElementById('additionalImage3').addEventListener('change', function() {
-            previewImage(this, 'preview4');
-        });
-
-        // Form validation
-        document.getElementById('addRoomForm').addEventListener('submit', function(event) {
-            const required = this.querySelectorAll('[required]');
-            let valid = true;
-            
-            required.forEach(function(field) {
-                if (!field.value.trim()) {
-                    field.style.borderColor = '#dc3545';
-                    valid = false;
-                } else {
-                    field.style.borderColor = '#e4e8f1';
-                }
-            });
-            
-            if (!valid) {
-                event.preventDefault();
-                alert('Please fill in all required fields');
-            }
-        });
-    </script>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2025 LUXE Hotel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

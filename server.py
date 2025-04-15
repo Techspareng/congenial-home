@@ -4,6 +4,10 @@ from datetime import datetime, timedelta
 import stripe  # You'll need to install stripe package
 from functools import wraps
 from flask_mail import Mail, Message
+from flask_login import UserMixin, login_required, current_user, login_user, logout_user, LoginManager
+from datetime import datetime, timedelta
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hotel_booking.db'
@@ -15,6 +19,7 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'your-email@gmail.com'
 app.config['MAIL_PASSWORD'] = 'your-password'
+db = "app.db"
 
 mail = Mail(app)
 
@@ -26,57 +31,61 @@ def _jinja2_filter_datetime(date, fmt=None):
     if fmt is None:
         fmt = '%B %d, %Y'
     return date.strftime(fmt)
-
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id)) 
 # Database Models
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    full_name = db.Column(db.String(100))
-    phone = db.Column(db.String(20))
-    address = db.Column(db.String(200))
-    bookings = db.relationship('Booking', backref='user', lazy=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password = db.Column(db.String(128))
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    bookings = db.relationship('Booking', backref='user', lazy='dynamic')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(20), default='user')  # user, admin, manager
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 class Hotel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
-    contact = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    amenities = db.Column(db.String(200), nullable=False)
-    image_url = db.Column(db.String(200))
-    rating = db.Column(db.Float, default=0.0)
-    rooms = db.relationship('Room', backref='hotel', lazy=True)
+    location = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    rooms = db.relationship('Room', backref='hotel', lazy='dynamic')
 
 class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)
     type = db.Column(db.String(50), nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    capacity = db.Column(db.Integer, nullable=False)
     description = db.Column(db.Text)
-    amenities = db.Column(db.String(200))
-    image_url = db.Column(db.String(200))
-    available = db.Column(db.Boolean, default=True)
-    tax_rate = db.Column(db.Float, default=0.1)  # 10% tax
-    base_price = db.Column(db.Float, nullable=False)
-    weekend_price = db.Column(db.Float)
-    holiday_price = db.Column(db.Float)
-    discount_rate = db.Column(db.Float, default=0.0)
-    discount_end_date = db.Column(db.DateTime)
-    min_guests = db.Column(db.Integer, default=1)
-    max_guests = db.Column(db.Integer, nullable=False)
-    
-    def get_price(self, check_in_date):
-        if self.discount_end_date and self.discount_end_date > datetime.now():
-            return self.base_price * (1 - self.discount_rate)
-        if check_in_date.weekday() >= 5:  # Weekend
-            return self.weekend_price or self.base_price
-        return self.base_price
+    price_per_night = db.Column(db.Float, nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    size = db.Column(db.Integer)  # in sq.ft
+    bed_type = db.Column(db.String(50))
+    total_rooms = db.Column(db.Integer, nullable=False, default=1)
+    image_file = db.Column(db.String(20), nullable=False, default='room_default.jpg')
+    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)
+    bookings = db.relationship('Booking', backref='room', lazy='dynamic')
+
+class Booking(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    check_in_date = db.Column(db.DateTime, nullable=False)
+    check_out_date = db.Column(db.DateTime, nullable=False)
+    guests = db.Column(db.Integer, nullable=False)
+    total_price = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(20), default='confirmed')  # confirmed, checked_in, completed, cancelled
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
+
 
 class RoomAvailability(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -86,22 +95,6 @@ class RoomAvailability(db.Model):
     price = db.Column(db.Float)
     
     __table_args__ = (db.UniqueConstraint('room_id', 'date'),)
-
-class Booking(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    contact = db.Column(db.String(50), nullable=False)
-    payment = db.Column(db.String(50), nullable=False)
-    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
-    check_in_date = db.Column(db.Date, nullable=False)
-    check_out_date = db.Column(db.Date, nullable=False)
-    num_guests = db.Column(db.Integer, nullable=False)
-    total_price = db.Column(db.Float, nullable=False)
-    booking_status = db.Column(db.String(20), default='pending')  # pending, confirmed, cancelled
-    payment_status = db.Column(db.String(20), default='pending')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -130,6 +123,8 @@ class SpecialRate(db.Model):
 #     db.create_all()
 
 # Add these new functions instead
+
+
 def init_db():
     with app.app_context():
         db.create_all()
@@ -148,37 +143,54 @@ def index():
 
 @app.route('/search', methods=['GET'])
 def search():
-    location = request.args.get('location', '')
+    # Extract query parameters
     check_in = request.args.get('check_in')
     check_out = request.args.get('check_out')
     guests = int(request.args.get('guests', 1))
+    children = int(request.args.get('children', 0))
+    room_type = request.args.get('room_type')
+    location = request.args.get('location', '')
     min_price = float(request.args.get('min_price', 0))
     max_price = float(request.args.get('max_price', 1000000))
     amenities = request.args.getlist('amenities')
 
-    # Base query
-    query = Hotel.query.filter(Hotel.address.contains(location))
-    
-    # Filter rooms based on criteria
-    available_rooms = Room.query.filter(
-        Room.capacity >= guests,
+    # Total guests = adults + children
+    total_guests = guests + children
+
+    # Filter hotels by location (if provided)
+    hotel_query = Hotel.query
+    if location:
+        hotel_query = hotel_query.filter(Hotel.address.contains(location))
+
+    hotels = hotel_query.all()
+
+    # Filter rooms by capacity and price
+    room_query = Room.query.filter(
+        Room.capacity >= total_guests,
         Room.price.between(min_price, max_price)
     )
-    
+
+    # Filter by room type
+    if room_type:
+        room_query = room_query.filter(Room.room_type == room_type)
+
+    # Filter by amenities
     if amenities:
-        available_rooms = available_rooms.filter(
-            Room.amenities.contains(amenity) for amenity in amenities
-        )
-    
-    hotels = query.all()
+        for amenity in amenities:
+            room_query = room_query.filter(Room.amenities.contains(amenity))
+
+    available_rooms = room_query.all()
+
+    # Return partial results (for dynamic rendering)
     return render_template(
-        'search_results.html',
+        'partials/room_results.html',
+        rooms=available_rooms,
         hotels=hotels,
         check_in=check_in,
         check_out=check_out,
-        guests=guests
+        guests=guests,
+        children=children
     )
-
 @app.route('/book/<int:hotel_id>', methods=['GET', 'POST'])
 def book(hotel_id):
     if request.method == 'POST':
@@ -199,12 +211,14 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = User.query.filter_by(username=username, password=password).first()
-        if user:
-            session['user_id'] = user.id
-            session['user'] = username
-            return redirect(url_for('index'))
-        flash("Invalid credentials")
+        user = User.query.filter_by(username=username).first()
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            flash("Login successful!")
+            return redirect(url_for('dashboard'))
+        else:
+            flash("Invalid credentials")
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -213,17 +227,22 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        
+
         if User.query.filter_by(username=username).first():
             flash('Username already exists')
             return redirect(url_for('register'))
-            
-        user = User(username=username, password=password, email=email)
+
+        # Use a safe, compatible hash method
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+
+        user = User(username=username, password=hashed_password, email=email)
         db.session.add(user)
         db.session.commit()
         flash('Registration successful! Please login.')
         return redirect(url_for('login'))
+
     return render_template('register.html')
+
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -353,6 +372,103 @@ def admin_dashboard():
     hotels = Hotel.query.all()
     bookings = Booking.query.order_by(Booking.created_at.desc()).limit(10).all()
     return render_template('admin/dashboard.html', hotels=hotels, bookings=bookings)
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    # Get stats for dashboard
+    total_bookings = Booking.query.count()
+    revenue = db.session.query(db.func.sum(Booking.total_price)).scalar() or 0
+    upcoming_checkins = Booking.query.filter(
+        Booking.check_in_date >= datetime.now(),
+        Booking.check_in_date <= datetime.now() + timedelta(days=1)
+    ).count()
+    
+    # Get recent bookings
+    recent_bookings = Booking.query.order_by(Booking.created_at.desc()).limit(5).all()
+    
+    # Get room availability
+    rooms = Room.query.all()
+    room_availability = []
+    for room in rooms:
+        booked = Booking.query.filter(
+            Booking.room_id == room.id,
+            Booking.check_out_date >= datetime.now()
+        ).count()
+        available = room.total_rooms - booked
+        room_availability.append({
+            'type': room.type,
+            'available': available,
+            'total': room.total_rooms,
+            'percentage': (booked / room.total_rooms) * 100 if room.total_rooms > 0 else 0
+        })
+    
+    return render_template('dashboard.html',
+                         total_bookings=total_bookings,
+                         revenue=revenue,
+                         upcoming_checkins=upcoming_checkins,
+                         recent_bookings=recent_bookings,
+                         room_availability=room_availability)
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html', user=current_user)
+@app.route('/rooms')
+@login_required
+def rooms():
+    rooms = Room.query.all()
+    return render_template('rooms.html', rooms=rooms)
+
+@app.route('/book/<int:room_id>', methods=['GET', 'POST'])
+@login_required
+def book_room(room_id):
+    room = Room.query.get_or_404(room_id)
+    
+    if request.method == 'POST':
+        check_in = datetime.strptime(request.form['check_in'], '%Y-%m-%d')
+        check_out = datetime.strptime(request.form['check_out'], '%Y-%m-%d')
+        guests = int(request.form['guests'])
+        
+        # Check availability
+        overlapping_bookings = Booking.query.filter(
+            Booking.room_id == room_id,
+            Booking.check_out_date > check_in,
+            Booking.check_in_date < check_out
+        ).count()
+        
+        if overlapping_bookings >= room.total_rooms:
+            flash('No available rooms for selected dates', 'danger')
+            return redirect(url_for('book_room', room_id=room_id))
+        
+        # Calculate total price
+        nights = (check_out - check_in).days
+        total_price = nights * room.price_per_night
+        
+        # Create booking
+        booking = Booking(
+            user_id=current_user.id,
+            room_id=room_id,
+            check_in_date=check_in,
+            check_out_date=check_out,
+            guests=guests,
+            total_price=total_price,
+            status='confirmed'
+        )
+        
+        db.session.add(booking)
+        db.session.commit()
+        
+        flash('Room booked successfully!', 'success')
+        return redirect(url_for('dashboard'))
+    
+    return render_template('book.html', room=room)
+
+@app.route('/my-bookings')
+@login_required
+def my_bookings():
+    bookings = Booking.query.filter_by(user_id=current_user.id).order_by(Booking.created_at.desc()).all()
+    return render_template('my_bookings.html', bookings=bookings)
+
 
 @app.route('/admin/hotel/add', methods=['GET', 'POST'])
 @admin_required
@@ -526,7 +642,12 @@ def send_booking_confirmation(booking):
     Thank you for choosing our hotel!
     """
     mail.send(msg)
-
+@app.route("/db")
+def database():
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+    return "Database created successfully!"
 # Modify the main block
 if __name__ == '__main__':
     init_db()  # Initialize database before running the app
